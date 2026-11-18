@@ -7,18 +7,16 @@ const matchers = Object.keys(routeAccessMap).map((route) => ({
   allowedRoles: routeAccessMap[route],
 }));
 
-console.log(matchers);
-
-export default clerkMiddleware((auth, req) => {
-  // if (isProtectedRoute(req)) auth().protect()
-
-  const { sessionClaims } = auth();
+export default clerkMiddleware(async (auth, req) => {
+  const { sessionClaims } = await auth();
 
   const role = (sessionClaims?.metadata as { role?: string })?.role;
 
   for (const { matcher, allowedRoles } of matchers) {
     if (matcher(req) && !allowedRoles.includes(role!)) {
-      return NextResponse.redirect(new URL(`/${role}`, req.url));
+      // Signed-out users (or users without a role) go to the sign-in page,
+      // everyone else goes to their own dashboard.
+      return NextResponse.redirect(new URL(role ? `/${role}` : "/", req.url));
     }
   }
 });
