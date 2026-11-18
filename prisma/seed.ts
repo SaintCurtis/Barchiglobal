@@ -5,8 +5,8 @@ async function main() {
   // ADMIN
   await prisma.admin.create({
     data: {
-      id: "admin1",
-      username: "admin1",
+      id: "user_3MHjz6RtiayPaxlKC1KjiH7QM42",
+      username: "saint_curtis",
     },
   });
   await prisma.admin.create({
